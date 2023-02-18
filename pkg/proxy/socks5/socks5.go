@@ -92,10 +92,10 @@ func New(conf *Config) (*Server, error) {
 
 	// 确保有数据转发器
 	if conf.RequestCopier == nil {
-		conf.RequestCopier = &proxy.SimpleCopier{}
+		conf.RequestCopier = proxy.NewSimpleCopier()
 	}
 	if conf.ResponseCopier == nil {
-		conf.ResponseCopier = &proxy.SimpleCopier{}
+		conf.ResponseCopier = proxy.NewSimpleCopier()
 	}
 
 	server := &Server{

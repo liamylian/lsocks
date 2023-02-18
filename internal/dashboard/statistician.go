@@ -2,7 +2,6 @@ package dashboard
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"path/filepath"
 	"time"
@@ -15,14 +14,16 @@ type Statistician struct {
 	dir     string
 	base    string
 	current string
+	storage Storage
 }
 
-func NewStatistician(trafficsFile string) *Statistician {
+func NewStatistician(trafficsFile string, storage Storage) *Statistician {
 	trafficsDir := filepath.Dir(trafficsFile)
 	trafficsBase := filepath.Base(trafficsFile)
 	return &Statistician{
-		dir:  trafficsDir,
-		base: trafficsBase,
+		dir:     trafficsDir,
+		base:    trafficsBase,
+		storage: storage,
 	}
 }
 
@@ -101,6 +102,12 @@ func (s *Statistician) recordHistory(ctx context.Context) {
 }
 
 func (s *Statistician) record(time time.Time, identifier string, bytes int64) {
-	// TODO
-	fmt.Println(time, identifier, bytes)
+	record := &Record{
+		Identifier: identifier,
+		Bytes:      bytes,
+		Time:       time,
+	}
+	if err := s.storage.Put(record); err != nil {
+		log.WithError(err).Errorf("statistician: put record failed, identifier=%s, bytes=%d, time=%s", identifier, bytes, time)
+	}
 }

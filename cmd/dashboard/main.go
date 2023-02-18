@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/liamylian/lsocks/internal/dashboard"
 	"github.com/liamylian/lsocks/pkg/log"
 	"github.com/liamylian/lsocks/pkg/types"
@@ -20,8 +21,14 @@ var (
 func main() {
 	configLog(logFile, logLevel)
 
-	s := dashboard.NewStatistician(trafficsFile)
+	storage := dashboard.NewStaticStorage()
+
+	s := dashboard.NewStatistician(trafficsFile, storage)
 	go s.Run()
+
+	handler := dashboard.NewHandler(storage)
+	go handler.Serve(fmt.Sprintf(":%d", httpPort))
+
 	waitSignal(syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 }
 

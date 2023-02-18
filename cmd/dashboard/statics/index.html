@@ -1,0 +1,40 @@
+<html lang="utf-8">
+
+<body>
+<div>
+    <canvas id="myChart"></canvas>
+</div>
+
+<script src="chart.js"></script>
+<script src="xhr.js"></script>
+<script>
+    const ctx = document.getElementById('myChart')
+    let chart = new Chart(ctx, {
+        type: 'line',
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    })
+
+    window.onload = function () {
+        get("http://localhost/api/traffics").then(function (resp) {
+            let times = Array.from(resp, x => x.time)
+            let traffics = Array.from(resp, x => x.bytes)
+            chart.data = {
+                labels: times,
+                datasets: [{
+                    label: '# of Votes',
+                    data: traffics,
+                    borderWidth: 1
+                }]
+            }
+            chart.draw()
+        })
+    };
+</script>
+</body>
+</html>

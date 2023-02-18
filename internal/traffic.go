@@ -75,7 +75,7 @@ func readTrafficsLine(line string) (t time.Time, identifier string, bytes int64,
 		return
 	}
 
-	if t, err = time.Parse(trafficsRecordTimeFormat, splits[0]); err != nil {
+	if t, err = time.ParseInLocation(trafficsRecordTimeFormat, splits[0], time.Local); err != nil {
 		return
 	}
 	identifier = splits[1]

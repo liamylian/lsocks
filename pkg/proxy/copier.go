@@ -8,8 +8,12 @@ type Copier interface {
 	Copy(dst io.Writer, src io.Reader) (int64, error)
 }
 
-type SimpleCopier struct{}
+type simpleCopier struct{}
 
-func (c *SimpleCopier) Copy(dst io.Writer, src io.Reader) (int64, error) {
+func NewSimpleCopier() Copier {
+	return &simpleCopier{}
+}
+
+func (c *simpleCopier) Copy(dst io.Writer, src io.Reader) (int64, error) {
 	return io.Copy(dst, src)
 }
