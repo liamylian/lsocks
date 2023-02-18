@@ -1,0 +1,38 @@
+version: '3.7'
+
+networks:
+  lsocks-network:
+    driver: bridge
+
+services:
+  dashboard:
+    image: liamylian/lsocks-dashboard:latest
+    restart: always
+    container_name: dashboard
+    hostname: dashboard
+    environment:
+      HTTP_PORT: :80
+      LOG_LEVEL: info
+      LOG_FILE: worker.log
+      TRAFFICS_FILE: traffics.log
+    ports:
+      - "80:80"
+    networks:
+      lsocks-network: { }
+  worker:
+    image: liamylian/lsocks-worker:latest
+    restart: always
+    container_name: worker
+    hostname: worker
+    environment:
+      SOCKS_PORT: :1080
+      LOG_LEVEL: info
+      LOG_FILE: worker.log
+      TRAFFICS_FILE: traffics.log
+      CREDENTIALS: admin/admin,root/root
+    ports:
+      - "1080:1080"
+    volumes:
+      - ./statics/:/root/statics/
+    networks:
+      lsocks-network: { }
